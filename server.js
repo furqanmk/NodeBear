@@ -26,6 +26,52 @@ router.use(function(req, res, next) {
 router.get('/', function(req, res) {
 		res.json({ message: "hooray! Welcome to our server!" });
 	});
+	
+router.post('/', function(req, res) {
+		var bear = new Bear();
+		bear.name = req.body.name;
+						
+		bear.save(function(err) {
+		if (err)
+			res.send(err);
+								
+			res.json({ message : 'New bear created!' });
+		});
+	});
+	
+//All routes ending with /bears
+router.route('/bears')
+					//Create a new bear as a result of request to http://localhost:8080/api/bears
+					.post(function(req, res) {
+
+                        var bear = Bear();
+ 						bear.name = req.body.name;
+
+ 						bear.save(function(err) {
+ 							if (err)
+ 								res.send(err);
+
+ 							res.json({ message : 'New bear created!' });
+ 						});
+					})
+
+                    .get(function(req, res) {
+                        Bear.find(function(err, bears) {
+                            if (err)
+                                res.send(err);
+                            res.json(bears);
+                        });
+                    });
+
+//All routes ending with /bears/:bear_id
+router.route('/bears/:bear_id')
+                    .get(function(req, res){
+                        Bear.findById(req.params.bear_id, function(err, bear) {
+                            if (err)
+                                res.send(err);
+                            res.json(bear);
+                        });
+                    });
 
 ///REGISTER ROUTES
 app.use('/api', router);
