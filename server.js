@@ -54,7 +54,7 @@ router.route('/bears')
  							res.json({ message : 'New bear created!' });
  						});
 					})
-
+                    //Get all bears
                     .get(function(req, res) {
                         Bear.find(function(err, bears) {
                             if (err)
@@ -63,6 +63,7 @@ router.route('/bears')
                         });
                     });
 
+
 //All routes ending with /bears/:bear_id
 router.route('/bears/:bear_id')
                     .get(function(req, res){
@@ -70,6 +71,23 @@ router.route('/bears/:bear_id')
                             if (err)
                                 res.send(err);
                             res.json(bear);
+                        });
+                    })
+                    //Update a bear
+                    .put(function (req, res) {
+                        Bear.findById(req.params.bear_id, function(err, bear){
+                            if (err)
+                                res.send(err);
+
+                            //update the bear's property
+                            bear.name = req.body.name;
+
+                            //save the bear
+                            bear.save(function(err) {
+                                res.send(err);
+                            });
+
+                            res.json({ message: 'Bear updated!' });
                         });
                     });
 
